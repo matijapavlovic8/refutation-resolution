@@ -3,6 +3,7 @@ package ui.clauses;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 public class Clause {
     private List<Literal> literals;
@@ -57,5 +58,18 @@ public class Clause {
             }
         }
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Clause clause = (Clause) o;
+        return literals.equals(clause.literals);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(literals);
     }
 }

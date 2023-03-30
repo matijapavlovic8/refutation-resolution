@@ -12,7 +12,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class InputFileParser {
 
@@ -32,7 +35,10 @@ public class InputFileParser {
                 }
                 line = br.readLine();
             }
-            return new Clauses(clauses);
+            Clause goalClause = clauses.get(clauses.size() - 1);
+            clauses.remove(goalClause);
+            Set<Clause> clauseSet = new HashSet<>(clauses);
+            return new Clauses(clauseSet, goalClause);
         } catch (IOException exc) {
             throw new RuntimeException(exc.getMessage());
         }

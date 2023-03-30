@@ -1,5 +1,7 @@
 package ui.clauses;
 
+import java.util.Objects;
+
 public class ClausePair {
     private Clause c1;
     private Clause c2;
@@ -14,5 +16,18 @@ public class ClausePair {
 
     public Clause getC2() {
         return c2;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ClausePair that = (ClausePair) o;
+        return c1.equals(that.c1) && c2.equals(that.c2);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(c1, c2);
     }
 }

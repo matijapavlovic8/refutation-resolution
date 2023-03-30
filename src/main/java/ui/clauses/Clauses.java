@@ -38,4 +38,10 @@ public class Clauses {
         this.setClauses(clauseList);
     }
 
+    public void removeTautologies() {
+        List<Clause> clauseList = this.getClauses();
+        clauseList.removeIf(Clause::isTautology);
+        this.setClauses(clauseList);
+    }
+
 }

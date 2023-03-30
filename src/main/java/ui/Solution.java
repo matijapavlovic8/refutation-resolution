@@ -24,6 +24,7 @@ public class Solution {
             Clauses clauses = InputFileParser.parseClauseFile(args[1]);
             RefutationResolution.resolution(clauses);
 
+
         } else if(args[0].equals(COOKING) &&
             args.length == 3 &&
             Files.exists(Path.of(args[1])) &&

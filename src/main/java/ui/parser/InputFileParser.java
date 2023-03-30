@@ -28,7 +28,7 @@ public class InputFileParser {
                 }
                 Clause clause = parseClause(line);
                 if(!clause.isTautology()) {
-                    clauses.add(parseClause(line));
+                    clauses.add(clause);
                 }
                 line = br.readLine();
             }
@@ -70,9 +70,7 @@ public class InputFileParser {
     }
 
     public static Clause parseClause (String line) {
-
         List<Literal> literals = new ArrayList<>();
-
         String[] splits = line.split("\\s+");
         for (String split : splits) {
             split = split.toLowerCase();
@@ -82,11 +80,13 @@ public class InputFileParser {
             }
             String NEGATION = "~";
             if (split.startsWith(NEGATION)) {
-                literals.add(new Literal(split.replace("~", ""), true));
+                Literal lit = new Literal(split.replace("~", ""), true);
+                literals.add(lit);
             } else {
                 literals.add(new Literal(split, false));
             }
         }
+
         return new Clause(literals);
     }
 

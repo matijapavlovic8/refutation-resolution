@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class Literal {
     private final String literal;
-    private final boolean negated;
+    private boolean negated;
 
 
     public Literal(String literal, boolean negated){
@@ -14,7 +14,10 @@ public class Literal {
 
     @Override
     public String toString() {
-        return negated ? "~" : "" + literal;
+        if (isNegated()) {
+            return "~" + this.literal;
+        }
+        return this.literal;
     }
 
     @Override
@@ -44,5 +47,9 @@ public class Literal {
     public boolean checkOpposing(Literal other) {
         return this.getLiteral().equals(other.getLiteral())
             && this.isNegated() != other.isNegated();
+    }
+
+    public void negate() {
+        this.negated = !this.negated;
     }
 }

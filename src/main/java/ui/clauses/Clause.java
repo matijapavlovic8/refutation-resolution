@@ -19,13 +19,13 @@ public class Clause {
         this.literals = literals;
     }
 
-    public void negate() {
+    public Clause negate() {
         List<Literal> negatedLiterals = new ArrayList<>();
         for(Literal l: this.getLiterals()) {
             Literal neg = new Literal(l.getLiteral(), !l.isNegated());
             negatedLiterals.add(neg);
         }
-        this.setLiterals(negatedLiterals);
+        return new Clause(negatedLiterals);
     }
 
     public boolean isTautology() {
@@ -46,5 +46,16 @@ public class Clause {
         return new HashSet<>(other.getLiterals()).containsAll(getLiterals());
     }
 
-
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < literals.size(); i++) {
+            if(i != literals.size() - 1) {
+                sb.append(literals.get(i).toString()).append(" V ");
+            } else {
+                sb.append(literals.get(i).toString());
+            }
+        }
+        return sb.toString();
+    }
 }

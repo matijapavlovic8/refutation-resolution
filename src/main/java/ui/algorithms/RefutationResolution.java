@@ -34,11 +34,12 @@ public class RefutationResolution {
         Set<Clause> sos = new HashSet<>();
         sos.add(negatedGoalClause);
 
-        Map<Clause, ClausePair> map = new HashMap<>();
 
         while (true) {
-            Set<ClausePair> pairs = selectClauses(clauses, sos);
+            Map<Clause, ClausePair> map = new HashMap<>();
             Set<Clause> resolvents = new HashSet<>();
+            Set<ClausePair> pairs = selectClauses(clauses, sos);
+
             for(ClausePair pair: pairs) {
                 Clause res = plResolve(pair);
 
@@ -49,33 +50,43 @@ public class RefutationResolution {
                     System.out.println("[CONCLUSION]: " + goalClause + " is true");
                     return;
                 }
-
-                resolvents.add(res);
-                map.put(res, pair);
+                if (!res.isTautology()) {
+                    resolvents.add(res);
+                    map.put(res, pair);
+                }
 
             }
             resolvents.removeIf(Clause::isTautology);
             eraseRedundantClauses(resolvents);
-            System.out.println(resolvents);
-            if (sos.containsAll(resolvents)) {
+
+            Set<Clause> union = new HashSet<>(sos);
+            union.addAll(clauses);
+
+            if (union.containsAll(resolvents)) {
+                printResolvents(map);
                 System.out.println("[CONCLUSION]: " + goalClause + " is unknown");
                 return;
             }
 
             sos.addAll(resolvents);
-            eraseRedundantClauses(sos);
+
             sos.removeIf(Clause::isTautology);
+            printResolvents(map);
+            System.out.println();
+
         }
 
     }
 
     private static Set<ClausePair> selectClauses (Set<Clause> clauses, Set<Clause> sos) {
+        Set<Clause> union = new HashSet<>(clauses);
+        union.addAll(sos);
         Set<ClausePair> pairs = new HashSet<>();
-        for (Clause c1: clauses) {
+        for (Clause c1: union) {
             for (Clause c2: sos) {
                 c1.getLiterals().forEach(l1 -> c2.getLiterals().forEach(l2 -> {
                     ClausePair cp = new ClausePair(c1, c2);
-                    if (l2.checkOpposing(l1) && !resolvedPairs.contains(cp)) {
+                    if (!c1.equals(c2) && l2.checkOpposing(l1) && !resolvedPairs.contains(cp)) {
                         pairs.add(cp);
                     }
                 }));
@@ -122,7 +133,7 @@ public class RefutationResolution {
     private static boolean isRedundant(Clause clause, Set<Clause> set) {
         for (Clause c: set) {
             if (new HashSet<>(c.getLiterals()).containsAll(clause.getLiterals())) {
-                System.out.println(clause + " " +set);
+                //System.out.println(clause + " ******" +set);
                 return true;
             }
         }

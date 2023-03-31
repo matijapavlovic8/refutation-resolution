@@ -7,15 +7,13 @@ import ui.clauses.Literal;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.TreeMap;
+
 
 import static ui.clauses.Clauses.eraseRedundantClauses;
 
@@ -23,10 +21,9 @@ import static ui.clauses.Clauses.eraseRedundantClauses;
 public class RefutationResolution {
 
     public static Set<ClausePair> resolvedPairs = new HashSet<>();
-    public static Set<Clause> usedClause = new HashSet<>();
+    public static Set<Clause> usedClauses = new HashSet<>();
 
     public static void resolution(Clauses premises) {
-        //usedClause.addAll(premises.getClauses());
         Clause goalClause = premises.getGoalClause();
         Clause negatedGoalClause = goalClause.negate();
 
@@ -70,13 +67,10 @@ public class RefutationResolution {
                 System.out.println("[CONCLUSION]: " + goalClause + " is unknown");
                 return;
             }
-
             sos.addAll(resolvents);
             sos.removeIf(Clause::isTautology);
 
-
         }
-
     }
 
     private static Set<ClausePair> selectClauses (Set<Clause> clauses, Set<Clause> sos) {
@@ -122,44 +116,43 @@ public class RefutationResolution {
         for (Clause c: clauses) {
             System.out.println(c);
         }
+        System.out.println("Negated goal clause:");
+        System.out.println("================");
         System.out.println(negatedGoalClause);
         System.out.println("================");
     }
 
     private static void printResolvents(Map<Clause, ClausePair> map) {
-//        System.out.println(map.keySet() + "   MAP");
-//        System.out.println(usedClause + "  USED");
-       // fillUsed(map);
+        fillUsed(map);
         for (Clause res: map.keySet()) {
-            if(/*usedClause.contains(res) &&*/ !res.getLiterals().isEmpty()) {
+            if(usedClauses.contains(res) && !res.getLiterals().isEmpty()) {
                 System.out.println(res + " (" + map.get(res).getC1() + ", "
                         + map.get(res).getC2() + ")");
             }
-
         }
     }
 
-//    private static void fillUsed(Map<Clause, ClausePair> map) {
-//        Queue<Clause> pom = new ArrayDeque<>();
-//        if (map.isEmpty())
-//            return;
-//        Clause last = map.keySet().iterator().next();
-//        for (Clause c: map.keySet()) {
-//            last = c;
-//
-//        }
-//        pom.add(last);
-//        while (!pom.isEmpty()) {
-//            Clause curr = pom.poll();
-//            if (curr != null) {
-//                if (map.containsKey(curr) && !usedClause.contains(map.get(curr).getC1()) && !usedClause.contains(map.get(curr).getC2())) {
-//                    pom.add(map.get(curr).getC1());
-//                    pom.add(map.get(curr).getC2());
-//                    usedClause.addAll(pom);
-//                }
-//            }
-//            usedClause.addAll(pom);
-//        }
-//    }
+    private static void fillUsed(Map<Clause, ClausePair> map) {
+        Queue<Clause> pom = new ArrayDeque<>();
+        if (map.isEmpty())
+            return;
+        Clause last = map.keySet().iterator().next();
+        for (Clause c: map.keySet()) {
+            last = c;
+
+        }
+        pom.add(last);
+        while (!pom.isEmpty()) {
+            Clause curr = pom.poll();
+            if (curr != null) {
+                if (map.containsKey(curr) && !usedClauses.contains(map.get(curr).getC1()) && !usedClauses.contains(map.get(curr).getC2())) {
+                    pom.add(map.get(curr).getC1());
+                    pom.add(map.get(curr).getC2());
+                    usedClauses.addAll(pom);
+                }
+            }
+            usedClauses.addAll(pom);
+        }
+    }
 
 }

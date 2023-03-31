@@ -6,6 +6,7 @@ import ui.clauses.UserCommand;
 import ui.clauses.UserInput;
 import ui.clauses.UserInputs;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class CookingHelper {
@@ -13,10 +14,13 @@ public class CookingHelper {
         Set<Clause> clauseSet = clauses.getClauses();
         clauseSet.add(clauses.getGoalClause());
         clauses.setClauses(clauseSet);
+
         for (UserInput input: userInputs.getInputs()) {
             if(input.getCommand().equals(UserCommand.QUERY)) {
                 Clause goalClause = input.getClause();
                 clauses.setGoalClause(goalClause);
+                RefutationResolution.resolvedPairs = new HashSet<>();;
+                RefutationResolution.usedClauses = new HashSet<>();;
                 RefutationResolution.resolution(clauses);
             } else if (input.getCommand().equals(UserCommand.ADD)) {
                 Set<Clause> newClauses = clauses.getClauses();

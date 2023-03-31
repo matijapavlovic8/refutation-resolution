@@ -23,7 +23,8 @@ public class ClausePair {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ClausePair that = (ClausePair) o;
-        return c1.equals(that.c1) && c2.equals(that.c2);
+        return (c1.equals(that.c1) && c2.equals(that.c2)) ||
+                (c1.equals(that.c2) && c2.equals(that.c1));
     }
 
     @Override

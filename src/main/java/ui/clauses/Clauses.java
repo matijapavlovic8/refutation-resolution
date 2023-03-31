@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class Clauses {
     private Set<Clause> clauses;
-    private final Clause goalClause;
+    private Clause goalClause;
     public Clauses(Set<Clause> clauses, Clause goalClause) {
         this.clauses = clauses;
         this.goalClause = goalClause;
@@ -29,15 +29,19 @@ public class Clauses {
         return goalClause;
     }
 
+    public void setGoalClause(Clause newGoal) {
+        this.goalClause = newGoal;
+    }
+
     public static Set<Clause> eraseRedundantClauses(Set<Clause> clauseSet) {
         Set<Clause> removed = new HashSet<>();
         for (Clause c1: clauseSet) {
             for (Clause c2: clauseSet) {
                 if (!c1.equals(c2)) {
                     if (c1.isRedundant(c2)) {
-                        removed.add(c1);
-                    } else if (c2.isRedundant(c1)) {
                         removed.add(c2);
+                    } else if (c2.isRedundant(c1)) {
+                        removed.add(c1);
                     }
                 }
             }

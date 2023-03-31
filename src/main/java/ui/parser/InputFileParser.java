@@ -27,6 +27,7 @@ public class InputFileParser {
             String line = br.readLine();
             while (line != null) {
                 if (line.startsWith(COMMENT)) {
+                    line = br.readLine();
                     continue;
                 }
                 Clause clause = parseClause(line);
@@ -50,14 +51,16 @@ public class InputFileParser {
             BufferedReader br = new BufferedReader(new FileReader(path));
             String line = br.readLine();
             while (line != null) {
+
                 if (line.startsWith(COMMENT)) {
                     continue;
                 }
-                String command = line.substring(line.length() - 2, line.length() - 1);
+                String command = String.valueOf(line.charAt(line.length() - 1));
                 Clause c = parseClause(line.substring(0, line.length() - 2).trim());
                 String QUERY = "?";
                 String REMOVAL = "-";
                 String ADDITION = "+";
+
                 if (command.equals(QUERY)) {
                     inputs.add(new UserInput(c, UserCommand.QUERY));
                 } else if (command.equals(ADDITION)) {
@@ -65,6 +68,7 @@ public class InputFileParser {
                 } else if(command.equals(REMOVAL)) {
                     inputs.add(new UserInput(c, UserCommand.REMOVE));
                 } else {
+                    System.out.println(command + "zz");
                     throw new RuntimeException("Illegal command given!");
                 }
                 line = br.readLine();

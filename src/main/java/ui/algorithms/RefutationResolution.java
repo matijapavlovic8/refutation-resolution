@@ -50,10 +50,9 @@ public class RefutationResolution {
                     System.out.println("[CONCLUSION]: " + goalClause + " is true");
                     return;
                 }
-                if (!res.isTautology()) {
-                    resolvents.add(res);
-                    map.put(res, pair);
-                }
+                resolvents.add(res);
+                map.put(res, pair);
+
 
             }
             resolvents.removeIf(Clause::isTautology);
@@ -139,9 +138,9 @@ public class RefutationResolution {
         Clause last = map.keySet().iterator().next();
         for (Clause c: map.keySet()) {
             last = c;
-
         }
         pom.add(last);
+
         while (!pom.isEmpty()) {
             Clause curr = pom.poll();
             if (curr != null) {
@@ -151,7 +150,7 @@ public class RefutationResolution {
                     usedClauses.addAll(pom);
                 }
             }
-            usedClauses.addAll(pom);
+            //usedClauses.addAll(pom);
         }
     }
 

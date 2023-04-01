@@ -20,12 +20,22 @@ import static ui.clauses.Clauses.eraseRedundantClauses;
 
 public class RefutationResolution {
 
-    public static Set<ClausePair> resolvedPairs = new HashSet<>();
-    public static Set<Clause> usedClauses = new HashSet<>();
+    public static Set<ClausePair> resolvedPairs;
+    public static Set<Clause> usedClauses;
+    public static List<Clause> negatedGoalsList = new ArrayList<>();
+
 
     public static void resolution(Clauses premises) {
+        resolvedPairs = new HashSet<>();
+        usedClauses = new HashSet<>();
+        if (negatedGoalsList.isEmpty()) {
+            getNegatedGoalClause(premises);
+        }
+
         Clause goalClause = premises.getGoalClause();
-        Clause negatedGoalClause = goalClause.negate();
+
+        Clause negatedGoalClause = negatedGoalsList.get(0);
+        negatedGoalsList.remove(negatedGoalClause);
 
         Set<Clause> clauses = premises.getClauses();
         printKnowledge(clauses, negatedGoalClause);
@@ -62,6 +72,9 @@ public class RefutationResolution {
             union.addAll(clauses);
 
             if (union.containsAll(resolvents)) {
+                if(!negatedGoalsList.isEmpty()){
+                    resolution(premises);
+                }
                 printResolvents(map);
                 System.out.println("[CONCLUSION]: " + goalClause + " is unknown");
                 return;
@@ -150,7 +163,19 @@ public class RefutationResolution {
                     usedClauses.addAll(pom);
                 }
             }
-            //usedClauses.addAll(pom);
+        }
+    }
+
+    private static void getNegatedGoalClause(Clauses premises) {
+        Clause goalClause = premises.getGoalClause();
+        if (goalClause.getLiterals().size() == 1) {
+            negatedGoalsList.add(goalClause.negate());
+            return;
+        }
+
+        for (Literal l: goalClause.getLiterals()) {
+            Clause newClause = new Clause(List.of(l));
+            negatedGoalsList.add(newClause.negate());
         }
     }
 
